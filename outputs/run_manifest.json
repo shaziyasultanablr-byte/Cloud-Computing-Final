@@ -2,7 +2,7 @@
   "run_id": "vibeguard-20261102T092858Z-s42",
   "started_utc": "2026-11-02T09:28:58Z",
   "completed_utc": "2026-11-02T09:29:07Z",
-  "git_sha": "uncommitted",
+  "git_sha": "cf263099f4fd7b6a054ec14e62a5b4add8ca04ca",
   "environment": {
     "python_version": "3.11.15",
     "platform": "Windows-10-10.0.26200-SP0",
