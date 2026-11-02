@@ -1,0 +1,445 @@
+{
+  "run_id": "vibeguard-20261102T092858Z-s42",
+  "timestamp_utc": "2026-11-02T09:29:07Z",
+  "aggregation_rule": "mean_window_softmax_score",
+  "manual_review_heuristic": {
+    "confidence_threshold": 0.7,
+    "agreement_threshold": 0.8
+  },
+  "cnn_1d": {
+    "val_2hp": {
+      "num_recordings": 4,
+      "correct_recordings": 4,
+      "recording_accuracy": 1.0,
+      "recording_macro_f1": 1.0,
+      "recordings": [
+        {
+          "file_id": 99,
+          "filename": "99.mat",
+          "split": "val",
+          "load_hp": 2,
+          "true_label": "normal",
+          "predicted_label": "normal",
+          "correct": true,
+          "num_windows": 200,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.987885,
+            "inner": 0.003779,
+            "ball": 0.004512,
+            "outer": 0.003825
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.987885,
+          "second_best_margin": 0.983373,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        },
+        {
+          "file_id": 107,
+          "filename": "107.mat",
+          "split": "val",
+          "load_hp": 2,
+          "true_label": "inner",
+          "predicted_label": "inner",
+          "correct": true,
+          "num_windows": 59,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.00129,
+            "inner": 0.99235,
+            "ball": 0.002613,
+            "outer": 0.003746
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.99235,
+          "second_best_margin": 0.988604,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        },
+        {
+          "file_id": 120,
+          "filename": "120.mat",
+          "split": "val",
+          "load_hp": 2,
+          "true_label": "ball",
+          "predicted_label": "ball",
+          "correct": true,
+          "num_windows": 59,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.002003,
+            "inner": 0.002522,
+            "ball": 0.98894,
+            "outer": 0.006536
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.98894,
+          "second_best_margin": 0.982404,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        },
+        {
+          "file_id": 132,
+          "filename": "132.mat",
+          "split": "val",
+          "load_hp": 2,
+          "true_label": "outer",
+          "predicted_label": "outer",
+          "correct": true,
+          "num_windows": 59,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.001906,
+            "inner": 0.002905,
+            "ball": 0.004426,
+            "outer": 0.990764
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.990764,
+          "second_best_margin": 0.986338,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        }
+      ]
+    },
+    "test_3hp": {
+      "num_recordings": 4,
+      "correct_recordings": 4,
+      "recording_accuracy": 1.0,
+      "recording_macro_f1": 1.0,
+      "recordings": [
+        {
+          "file_id": 100,
+          "filename": "100.mat",
+          "split": "test",
+          "load_hp": 3,
+          "true_label": "normal",
+          "predicted_label": "normal",
+          "correct": true,
+          "num_windows": 200,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.986942,
+            "inner": 0.004347,
+            "ball": 0.004907,
+            "outer": 0.003804
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.986942,
+          "second_best_margin": 0.982035,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        },
+        {
+          "file_id": 108,
+          "filename": "108.mat",
+          "split": "test",
+          "load_hp": 3,
+          "true_label": "inner",
+          "predicted_label": "inner",
+          "correct": true,
+          "num_windows": 60,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.00087,
+            "inner": 0.99532,
+            "ball": 0.00165,
+            "outer": 0.00216
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.99532,
+          "second_best_margin": 0.993159,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        },
+        {
+          "file_id": 121,
+          "filename": "121.mat",
+          "split": "test",
+          "load_hp": 3,
+          "true_label": "ball",
+          "predicted_label": "ball",
+          "correct": true,
+          "num_windows": 59,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.002269,
+            "inner": 0.003675,
+            "ball": 0.98904,
+            "outer": 0.005016
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.98904,
+          "second_best_margin": 0.984025,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        },
+        {
+          "file_id": 133,
+          "filename": "133.mat",
+          "split": "test",
+          "load_hp": 3,
+          "true_label": "outer",
+          "predicted_label": "outer",
+          "correct": true,
+          "num_windows": 59,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.002924,
+            "inner": 0.004527,
+            "ball": 0.007434,
+            "outer": 0.985114
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.985114,
+          "second_best_margin": 0.97768,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        }
+      ]
+    }
+  },
+  "random_forest_baseline": {
+    "val_2hp": {
+      "num_recordings": 4,
+      "correct_recordings": 4,
+      "recording_accuracy": 1.0,
+      "recording_macro_f1": 1.0,
+      "recordings": [
+        {
+          "file_id": 99,
+          "filename": "99.mat",
+          "split": "val",
+          "load_hp": 2,
+          "true_label": "normal",
+          "predicted_label": "normal",
+          "correct": true,
+          "num_windows": 200,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.979325,
+            "inner": 0.001275,
+            "ball": 0.019325,
+            "outer": 7.5e-05
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.979325,
+          "second_best_margin": 0.96,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        },
+        {
+          "file_id": 107,
+          "filename": "107.mat",
+          "split": "val",
+          "load_hp": 2,
+          "true_label": "inner",
+          "predicted_label": "inner",
+          "correct": true,
+          "num_windows": 59,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 8.5e-05,
+            "inner": 0.987712,
+            "ball": 0.012119,
+            "outer": 8.5e-05
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.987712,
+          "second_best_margin": 0.975593,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        },
+        {
+          "file_id": 120,
+          "filename": "120.mat",
+          "split": "val",
+          "load_hp": 2,
+          "true_label": "ball",
+          "predicted_label": "ball",
+          "correct": true,
+          "num_windows": 59,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.017119,
+            "inner": 0.000593,
+            "ball": 0.982288,
+            "outer": 0.0
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.982288,
+          "second_best_margin": 0.965169,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        },
+        {
+          "file_id": 132,
+          "filename": "132.mat",
+          "split": "val",
+          "load_hp": 2,
+          "true_label": "outer",
+          "predicted_label": "outer",
+          "correct": true,
+          "num_windows": 59,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.0,
+            "inner": 0.0,
+            "ball": 0.0,
+            "outer": 1.0
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 1.0,
+          "second_best_margin": 1.0,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        }
+      ]
+    },
+    "test_3hp": {
+      "num_recordings": 4,
+      "correct_recordings": 4,
+      "recording_accuracy": 1.0,
+      "recording_macro_f1": 1.0,
+      "recordings": [
+        {
+          "file_id": 100,
+          "filename": "100.mat",
+          "split": "test",
+          "load_hp": 3,
+          "true_label": "normal",
+          "predicted_label": "normal",
+          "correct": true,
+          "num_windows": 200,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.9785,
+            "inner": 0.0006,
+            "ball": 0.0209,
+            "outer": 0.0
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.9785,
+          "second_best_margin": 0.9576,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        },
+        {
+          "file_id": 108,
+          "filename": "108.mat",
+          "split": "test",
+          "load_hp": 3,
+          "true_label": "inner",
+          "predicted_label": "inner",
+          "correct": true,
+          "num_windows": 60,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.002583,
+            "inner": 0.72725,
+            "ball": 0.22675,
+            "outer": 0.043417
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.72725,
+          "second_best_margin": 0.5005,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        },
+        {
+          "file_id": 121,
+          "filename": "121.mat",
+          "split": "test",
+          "load_hp": 3,
+          "true_label": "ball",
+          "predicted_label": "ball",
+          "correct": true,
+          "num_windows": 59,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.007627,
+            "inner": 0.004237,
+            "ball": 0.987034,
+            "outer": 0.001102
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.987034,
+          "second_best_margin": 0.979407,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        },
+        {
+          "file_id": 133,
+          "filename": "133.mat",
+          "split": "test",
+          "load_hp": 3,
+          "true_label": "outer",
+          "predicted_label": "outer",
+          "correct": true,
+          "num_windows": 59,
+          "window_accuracy_within_file": 1.0,
+          "mean_uncalibrated_scores": {
+            "normal": 0.0,
+            "inner": 0.000932,
+            "ball": 0.000932,
+            "outer": 0.998136
+          },
+          "manual_review_required": false,
+          "reasons": [],
+          "top_uncalibrated_score": 0.998136,
+          "second_best_margin": 0.997203,
+          "segment_agreement": 1.0,
+          "confidence_threshold": 0.7,
+          "agreement_threshold": 0.8,
+          "calibration_note": "Softmax outputs are uncalibrated model scores, not true posterior probabilities."
+        }
+      ]
+    }
+  }
+}

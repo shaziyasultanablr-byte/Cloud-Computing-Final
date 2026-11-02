@@ -1,0 +1,417 @@
+{
+  "run_id": "vibeguard-20261102T092858Z-s42",
+  "timestamp_utc": "2026-11-02T09:29:07Z",
+  "seed": 42,
+  "selected_epoch": 14,
+  "total_epochs": 14,
+  "batch_size": 64,
+  "learning_rate": 0.001,
+  "model_trainable_parameters": 15572,
+  "split_protocol": {
+    "train_loads_hp": [
+      0,
+      1
+    ],
+    "val_loads_hp": [
+      2
+    ],
+    "test_loads_hp": [
+      3
+    ],
+    "train_recordings": 8,
+    "val_recordings": 4,
+    "test_recordings": 4,
+    "window_size": 2048,
+    "window_stride": 2048,
+    "max_windows_per_recording": 200
+  },
+  "cnn_1d": {
+    "train": {
+      "num_windows": 673,
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "per_class": {
+        "normal": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 319
+        },
+        "inner": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 118
+        },
+        "ball": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 118
+        },
+        "outer": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 118
+        }
+      },
+      "confusion_matrix": [
+        [
+          319,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          118,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          118,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          118
+        ]
+      ],
+      "labels": [
+        "normal",
+        "inner",
+        "ball",
+        "outer"
+      ],
+      "loss": 0.01082
+    },
+    "val_2hp": {
+      "num_windows": 377,
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "per_class": {
+        "normal": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 200
+        },
+        "inner": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 59
+        },
+        "ball": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 59
+        },
+        "outer": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 59
+        }
+      },
+      "confusion_matrix": [
+        [
+          200,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          59,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          59,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          59
+        ]
+      ],
+      "labels": [
+        "normal",
+        "inner",
+        "ball",
+        "outer"
+      ],
+      "loss": 0.010862
+    },
+    "test_3hp": {
+      "num_windows": 378,
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "per_class": {
+        "normal": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 200
+        },
+        "inner": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 60
+        },
+        "ball": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 59
+        },
+        "outer": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 59
+        }
+      },
+      "confusion_matrix": [
+        [
+          200,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          60,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          59,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          59
+        ]
+      ],
+      "labels": [
+        "normal",
+        "inner",
+        "ball",
+        "outer"
+      ],
+      "loss": 0.011761
+    }
+  },
+  "random_forest_baseline": {
+    "n_estimators": 200,
+    "max_depth": 12,
+    "num_handcrafted_features": 18,
+    "train": {
+      "num_windows": 673,
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "per_class": {
+        "normal": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 319
+        },
+        "inner": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 118
+        },
+        "ball": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 118
+        },
+        "outer": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 118
+        }
+      },
+      "confusion_matrix": [
+        [
+          319,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          118,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          118,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          118
+        ]
+      ],
+      "labels": [
+        "normal",
+        "inner",
+        "ball",
+        "outer"
+      ]
+    },
+    "val_2hp": {
+      "num_windows": 377,
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "per_class": {
+        "normal": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 200
+        },
+        "inner": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 59
+        },
+        "ball": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 59
+        },
+        "outer": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 59
+        }
+      },
+      "confusion_matrix": [
+        [
+          200,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          59,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          59,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          59
+        ]
+      ],
+      "labels": [
+        "normal",
+        "inner",
+        "ball",
+        "outer"
+      ]
+    },
+    "test_3hp": {
+      "num_windows": 378,
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "per_class": {
+        "normal": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 200
+        },
+        "inner": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 60
+        },
+        "ball": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 59
+        },
+        "outer": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 59
+        }
+      },
+      "confusion_matrix": [
+        [
+          200,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          60,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          59,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          59
+        ]
+      ],
+      "labels": [
+        "normal",
+        "inner",
+        "ball",
+        "outer"
+      ]
+    }
+  },
+  "limitations_note": "Validation (2 HP) and held-out test (3 HP) splits each contain 4 recordings (1 recording per class, 200 non-overlapping windows per recording). Softmax scores are uncalibrated confidence estimates."
+}
