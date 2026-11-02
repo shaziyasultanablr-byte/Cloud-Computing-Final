@@ -1,0 +1,17 @@
+file_id,filename,label,class_index,fault_diameter_in,load_hp,approx_rpm,split,expected_subdir,sampling_hz,original_url
+97,97.mat,normal,0,0.000,0,1797,train,normal,12000,https://engineering.case.edu/sites/default/files/97.mat
+98,98.mat,normal,0,0.000,1,1772,train,normal,12000,https://engineering.case.edu/sites/default/files/98.mat
+99,99.mat,normal,0,0.000,2,1750,val,normal,12000,https://engineering.case.edu/sites/default/files/99.mat
+100,100.mat,normal,0,0.000,3,1730,test,normal,12000,https://engineering.case.edu/sites/default/files/100.mat
+105,105.mat,inner,1,0.007,0,1797,train,inner,12000,https://engineering.case.edu/sites/default/files/105.mat
+106,106.mat,inner,1,0.007,1,1772,train,inner,12000,https://engineering.case.edu/sites/default/files/106.mat
+107,107.mat,inner,1,0.007,2,1750,val,inner,12000,https://engineering.case.edu/sites/default/files/107.mat
+108,108.mat,inner,1,0.007,3,1730,test,inner,12000,https://engineering.case.edu/sites/default/files/108.mat
+118,118.mat,ball,2,0.007,0,1797,train,ball,12000,https://engineering.case.edu/sites/default/files/118.mat
+119,119.mat,ball,2,0.007,1,1772,train,ball,12000,https://engineering.case.edu/sites/default/files/119.mat
+120,120.mat,ball,2,0.007,2,1750,val,ball,12000,https://engineering.case.edu/sites/default/files/120.mat
+121,121.mat,ball,2,0.007,3,1730,test,ball,12000,https://engineering.case.edu/sites/default/files/121.mat
+130,130.mat,outer,3,0.007,0,1797,train,outer,12000,https://engineering.case.edu/sites/default/files/130.mat
+131,131.mat,outer,3,0.007,1,1772,train,outer,12000,https://engineering.case.edu/sites/default/files/131.mat
+132,132.mat,outer,3,0.007,2,1750,val,outer,12000,https://engineering.case.edu/sites/default/files/132.mat
+133,133.mat,outer,3,0.007,3,1730,test,outer,12000,https://engineering.case.edu/sites/default/files/133.mat

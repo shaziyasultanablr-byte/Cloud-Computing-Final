@@ -1,0 +1,32 @@
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Raw CWRU MATLAB dataset files (acquired from official university source / stored in private S3)
+data/raw/**/*.mat
+data/raw/*.mat
+
+# Secrets and private keys — NEVER commit
+.env
+.env.*
+!.env.example
+*.pem
+*.ppk
+*.key
+*secret*
+*credentials*
+
+# OS / IDE artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
