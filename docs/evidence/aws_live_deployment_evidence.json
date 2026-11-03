@@ -32,7 +32,8 @@
                          "ami_id":  "ami-0d6dd9e8265d48906",
                          "availability_zone":  "us-east-1c",
                          "security_group_name":  "vibeguard-ssh-sg",
-                         "ebs_volume_size_gib":  20
+                         "ebs_volume_size_gib":  20,
+                         "post_verification_state":  "stopped (preserved for university demo)"
                      },
     "budget":  {
                    "health_status":  "HEALTHY",
@@ -100,7 +101,9 @@
                              "streamlit_bind_address":  "127.0.0.1:8501",
                              "ssh_tunnel_health_check":  "HTTP 200 OK (ok)",
                              "ssh_tunnel_root_page_bytes":  6467,
-                             "s3_iam_role_probe":  "Connected via IAM role to private bucket s3://vibeguard-cloud-2026-810995308548 (24 objects)."
+                             "s3_iam_role_probe":  "Connected via IAM role to private bucket s3://vibeguard-cloud-2026-810995308548 (24 objects).",
+                             "dependency_pins_verified":  "numpy==1.26.4, pyarrow==18.1.0, pandas==3.0.6, streamlit==1.66.1, torch==2.15.0+cpu",
+                             "live_chrome_smoke_test":  "Verified 3 tabs, 4 held-out 3 HP recordings, and 5 upload guards with 0 exceptions; screenshots saved in docs/evidence/"
                          },
     "ec2_iam_role":  {
                          "role_id":  "AROA3ZUYWLACNULYAM2DR",
