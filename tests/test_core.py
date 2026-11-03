@@ -224,6 +224,13 @@ def test_cloud_sync_offline_safety(tmp_path: Path, monkeypatch: pytest.MonkeyPat
 def test_real_checkpoint_and_four_conditions_end_to_end() -> None:
     """Verify loaded outputs/model.pt matches outputs/file_level_metrics.json across all 4 conditions."""
     import json
+    import pandas as pd
+    import pyarrow as pa
+
+    # Verify NumPy 1.26.4 + PyArrow 18.1.0 + Pandas DataFrame-to-Arrow table conversion used by Streamlit
+    df_check = pd.DataFrame({"class": CLASS_NAMES, "score": [0.98, 0.01, 0.005, 0.005]})
+    arrow_tbl = pa.Table.from_pandas(df_check)
+    assert arrow_tbl.num_rows == 4
 
     model_path = Path("outputs/model.pt")
     file_metrics_path = Path("outputs/file_level_metrics.json")

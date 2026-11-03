@@ -307,7 +307,7 @@ def main() -> None:
                                 for cls_name in CLASS_NAMES
                             ]
                         )
-                        st.dataframe(scores_df, use_container_width=True, hide_index=True)
+                        st.dataframe(scores_df, width="stretch", hide_index=True)
                         st.bar_chart(
                             scores_df.set_index("Bearing Condition")["Mean Uncalibrated Softmax Score"]
                         )
@@ -359,8 +359,30 @@ def main() -> None:
 
             st.markdown("#### Recording-Level Predictions on Held-Out 3 HP Test Split (4 Recordings)")
             rec_rows = file_metrics_data.get("cnn_1d", {}).get("test_3hp", {}).get("recordings", [])
+            rf_rows = file_metrics_data.get("random_forest_baseline", {}).get("test_3hp", {}).get("recordings", [])
+            rf_by_id = {r["file_id"]: r for r in rf_rows}
             if rec_rows:
-                st.dataframe(pd.DataFrame(rec_rows), use_container_width=True, hide_index=True)
+                clean_rec_rows = []
+                for r in rec_rows:
+                    rf_r = rf_by_id.get(r["file_id"], {})
+                    clean_rec_rows.append(
+                        {
+                            "File ID": r["file_id"],
+                            "Recording": r["filename"],
+                            "Load (HP)": r["load_hp"],
+                            "True Class": r["true_label"],
+                            "Windows": r["num_windows"],
+                            "1D CNN Prediction": r["predicted_label"],
+                            "1D CNN Top Score": round(float(r["top_uncalibrated_score"]), 6),
+                            "1D CNN Margin": round(float(r["second_best_margin"]), 6),
+                            "RF Prediction": rf_r.get("predicted_label", "N/A"),
+                            "RF Top Score": round(float(rf_r.get("top_uncalibrated_score", 0.0)), 6),
+                            "RF Margin": round(float(rf_r.get("second_best_margin", 0.0)), 6),
+                            "Segment Agreement": f"{float(r['segment_agreement']):.1%}",
+                            "Manual Review Flag": bool(r["manual_review_required"]),
+                        }
+                    )
+                st.dataframe(pd.DataFrame(clean_rec_rows), width="stretch", hide_index=True)
 
             fig_col1, fig_col2 = st.columns(2)
             cm_img = Path("outputs/confusion_matrix.png")
