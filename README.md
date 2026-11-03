@@ -1,7 +1,9 @@
 # VibeGuard Cloud: Load-Shift-Aware Industrial Motor Bearing Fault Classification Using 1D Deep Learning and AWS
 
 **Final-Year Cloud Computing & Deep Learning Project**  
-**Repository:** `https://github.com/shaziyasultanablr-byte/Cloud-Computing-Final`
+**Repository:** `https://github.com/shaziyasultanablr-byte/Cloud-Computing-Final`  
+**Public Web App (Streamlit Community Cloud):** [`https://vibeguard-cloud.streamlit.app`](https://vibeguard-cloud.streamlit.app) | [**One-Click Deploy on Streamlit Cloud**](https://share.streamlit.io/deploy?repository=shaziyasultanablr-byte/Cloud-Computing-Final&branch=main&mainModule=app.py)  
+**AWS Cloud Infrastructure (`us-east-1`):** EC2 `i-0c8d53060f56c451d` (`t3.small`, Ubuntu 24.04.5 LTS) + `20 GiB gp3` EBS (`vol-09af634eea204d82d`) + Private S3 (`s3://vibeguard-cloud-2026-810995308548`) + IAM Role (`VibeGuardEC2Role`)
 
 ---
 
@@ -111,11 +113,32 @@ Example verified test output:
 .\.venv\Scripts\python.exe train.py --epochs 14 --batch-size 64
 ```
 
-### 3.3 Launch the Streamlit Dashboard Locally or via AWS SSH Tunnel
+### 3.3 Launch the Streamlit Dashboard (Two Deployment Versions)
+
+#### Version 1 — AWS EC2 + Private S3 + Encrypted SSH Tunnel (`us-east-1`)
+When running on the provisioned AWS EC2 instance (`i-0c8d53060f56c451d`), the application connects to the private bucket `s3://vibeguard-cloud-2026-810995308548` via the attached `VibeGuardEC2Role` instance profile (zero static access keys) and is accessed over an encrypted SSH tunnel:
+```powershell
+# Start EC2 instance (when needed for live university demonstration)
+aws ec2 start-instances --instance-ids i-0c8d53060f56c451d --region us-east-1
+
+# Open encrypted SSH tunnel to EC2 loopback (127.0.0.1:8501)
+ssh -F NUL -i "$HOME\.ssh\vibeguard-ec2-key.pem" -L 8501:127.0.0.1:8501 ubuntu@<EC2_PUBLIC_IP>
+```
+Then open **`http://localhost:8501`** in your browser. See [`docs/AWS_DEPLOYMENT.md`](docs/AWS_DEPLOYMENT.md) and [`docs/COST_AND_CLEANUP.md`](docs/COST_AND_CLEANUP.md) for full details.
+
+#### Version 2 — Public Web Hosting on Streamlit Community Cloud (`$0` Cost, Zero AWS Credentials)
+`app.py` is also configured for zero-credential public hosting on **Streamlit Community Cloud**:
+- **Public URL:** [`https://vibeguard-cloud.streamlit.app`](https://vibeguard-cloud.streamlit.app)
+- **One-Click Deployment Link:** [`https://share.streamlit.io/deploy?repository=shaziyasultanablr-byte/Cloud-Computing-Final&branch=main&mainModule=app.py`](https://share.streamlit.io/deploy?repository=shaziyasultanablr-byte/Cloud-Computing-Final&branch=main&mainModule=app.py)
+- **How It Works Without AWS Keys or Git-Committed Raw Data:**
+  1. Uses `.python-version` (`3.11`) and `requirements.txt` (`--extra-index-url https://download.pytorch.org/whl/cpu`, `torch>=2.2.0`, `numpy==1.26.4`, `pyarrow==18.1.0`) to install lightweight CPU-only wheels within Streamlit Community Cloud's resource limits.
+  2. Loads the verified `outputs/model.pt` checkpoint (`SHA-256: 3cd1ac3b823ea903...`) once into memory via `@st.cache_resource`.
+  3. Automatically fetches and caches the 4 official `3 HP` demonstration recordings (`100.mat`, `108.mat`, `121.mat`, `133.mat`) on demand from the official CWRU Bearing Data Center (`https://engineering.case.edu/sites/default/files/{file_id}.mat`) and verifies their SHA-256 checksums before running inference.
+
+#### Local Workstation Execution
 ```powershell
 .\.venv\Scripts\python.exe -m streamlit run app.py --server.address 127.0.0.1 --server.port 8501 --server.headless true
 ```
-Then open **`http://localhost:8501`** in your browser. For AWS EC2 deployment and encrypted SSH port forwarding (`ssh -i key.pem -L 8501:127.0.0.1:8501 ubuntu@<EC2_IP>`), see [`docs/AWS_DEPLOYMENT.md`](docs/AWS_DEPLOYMENT.md).
 
 ---
 

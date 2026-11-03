@@ -26,9 +26,11 @@ from data_utils import (
     extract_signal_from_csv,
     segment_and_normalize_signal,
 )
+from download_data import download_single_file
 from model import (
     DEFAULT_AGREEMENT_THRESHOLD,
     DEFAULT_CONFIDENCE_THRESHOLD,
+    TinyFaultCNN,
     load_model_checkpoint,
     predict_windows,
 )
@@ -42,29 +44,69 @@ HELD_OUT_DEMO_FILES: dict[str, dict[str, Any]] = {
     "None (Use File Uploader)": {"path": None},
     "Held-Out 3 HP Demo — 100.mat (Normal Baseline, 3 HP)": {
         "path": Path("data/raw/normal/100.mat"),
+        "url": "https://engineering.case.edu/sites/default/files/100.mat",
+        "sha256": "88a5990cb541320e91505a1d72139e1993500ffe6e292a451011667f4138ca78",
         "true_label": "normal",
         "file_id": 100,
         "load_hp": 3,
     },
     "Held-Out 3 HP Demo — 108.mat (Inner Race 0.007 in, 3 HP)": {
         "path": Path("data/raw/inner/108.mat"),
+        "url": "https://engineering.case.edu/sites/default/files/108.mat",
+        "sha256": "d415f0e65128bfa0b118c2051c988fb0dc6ce3e4c8aa45fdc5ad1d0967462e7d",
         "true_label": "inner",
         "file_id": 108,
         "load_hp": 3,
     },
     "Held-Out 3 HP Demo — 121.mat (Ball Fault 0.007 in, 3 HP)": {
         "path": Path("data/raw/ball/121.mat"),
+        "url": "https://engineering.case.edu/sites/default/files/121.mat",
+        "sha256": "52f686e984ba8e9b04a047a57416271cdb322cee57ee105dce58926a24b966cb",
         "true_label": "ball",
         "file_id": 121,
         "load_hp": 3,
     },
     "Held-Out 3 HP Demo — 133.mat (Outer Race @ 6:00 0.007 in, 3 HP)": {
         "path": Path("data/raw/outer/133.mat"),
+        "url": "https://engineering.case.edu/sites/default/files/133.mat",
+        "sha256": "53f076cb0d905cf46bffaee7736abce8224ffed777deed03c0c863d762a90c71",
         "true_label": "outer",
         "file_id": 133,
         "load_hp": 3,
     },
 }
+
+
+@st.cache_resource(show_spinner=False)
+def get_cached_model(checkpoint_path_str: str) -> tuple[TinyFaultCNN, dict[str, Any]]:
+    """Load and cache TinyFaultCNN in CPU eval mode across Streamlit sessions."""
+    return load_model_checkpoint(Path(checkpoint_path_str), device="cpu")
+
+
+@st.cache_data(show_spinner=False)
+def fetch_official_cwru_demo_bytes(
+    file_id: int,
+    url: str,
+    dest_path_str: str,
+    expected_sha256: str,
+) -> bytes:
+    """Retrieve an official held-out 3 HP CWRU .mat recording from disk or CWRU Bearing Data Center."""
+    dest_path = Path(dest_path_str)
+    if dest_path.exists() and dest_path.stat().st_size > 2048:
+        if compute_sha256(dest_path) == expected_sha256:
+            return dest_path.read_bytes()
+
+    ok, msg = download_single_file(url=url, dest_path=dest_path)
+    if not ok or not dest_path.exists():
+        raise DataValidationError(
+            f"Unable to retrieve official CWRU recording {file_id}.mat from {url}: {msg}"
+        )
+    actual_sha = compute_sha256(dest_path)
+    if actual_sha != expected_sha256:
+        raise DataValidationError(
+            f"SHA-256 mismatch for {file_id}.mat (expected {expected_sha256[:12]}..., got {actual_sha[:12]}...)."
+        )
+    return dest_path.read_bytes()
 
 
 def load_json_if_exists(path: Path) -> dict[str, Any] | None:
@@ -186,6 +228,11 @@ def main() -> None:
         if s3_status["connected"]:
             st.success(s3_status["message"])
         else:
+            st.info(
+                "🌐 **Public Web Demo Mode (Credential-Free)**  \n"
+                "Running without AWS credentials. Official 3 HP CWRU test recordings are retrieved "
+                "automatically on demand from the CWRU Bearing Data Center and verified by SHA-256."
+            )
             st.caption(s3_status["message"])
 
         st.divider()
@@ -235,15 +282,22 @@ def main() -> None:
             elif demo_choice != "None (Use File Uploader)":
                 demo_info = HELD_OUT_DEMO_FILES[demo_choice]
                 demo_path: Path | None = demo_info.get("path")
-                if demo_path is not None and demo_path.exists():
-                    source_name = demo_path.name
-                    raw_bytes = demo_path.read_bytes()
-                    demo_meta = demo_info
-                else:
-                    st.warning(
-                        f"Selected demo recording `{demo_path}` is not present locally in `data/raw/`. "
-                        "Run `python download_data.py` or upload a `.mat`/`.csv` file directly."
-                    )
+                if demo_path is not None:
+                    try:
+                        with st.spinner(f"Loading & verifying official CWRU recording `{demo_path.name}`..."):
+                            raw_bytes = fetch_official_cwru_demo_bytes(
+                                file_id=int(demo_info["file_id"]),
+                                url=str(demo_info["url"]),
+                                dest_path_str=str(demo_path),
+                                expected_sha256=str(demo_info["sha256"]),
+                            )
+                        source_name = demo_path.name
+                        demo_meta = demo_info
+                    except Exception as fetch_err:
+                        st.warning(
+                            f"Could not automatically retrieve `{demo_path.name}` from CWRU ({fetch_err}). "
+                            "Please upload a `.mat` or `.csv` file directly."
+                        )
 
             if source_name is not None and raw_bytes is not None:
                 try:
@@ -254,7 +308,7 @@ def main() -> None:
                         stride=WINDOW_STRIDE,
                         max_windows=MAX_WINDOWS_PER_FILE,
                     )
-                    model, ckpt_meta = load_model_checkpoint(MODEL_PATH, device="cpu")
+                    model, ckpt_meta = get_cached_model(str(MODEL_PATH))
                     pred_result = predict_windows(model, windows, device="cpu")
 
                     st.divider()
