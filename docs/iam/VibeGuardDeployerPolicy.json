@@ -46,10 +46,12 @@
       "Resource": [
         "arn:aws:ec2:us-east-1:810995308548:instance/*",
         "arn:aws:ec2:us-east-1:810995308548:volume/*",
-        "arn:aws:ec2:us-east-1:810995308548:security-group/*"
+        "arn:aws:ec2:us-east-1:810995308548:security-group/*",
+        "arn:aws:ec2:us-east-1:810995308548:key-pair/*",
+        "arn:aws:ec2:us-east-1:810995308548:network-interface/*"
       ],
       "Condition": {
-        "StringEquals": { "ec2:CreateAction": ["RunInstances", "CreateSecurityGroup"] }
+        "StringEquals": { "ec2:CreateAction": ["RunInstances", "CreateSecurityGroup", "CreateKeyPair"] }
       }
     },
     {
@@ -82,6 +84,15 @@
         "arn:aws:ec2:us-east-1:810995308548:security-group/*"
       ],
       "Condition": { "StringEquals": { "ec2:ResourceTag/Project": "VibeGuard" } }
+    },
+    {
+      "Sid": "Ec2SecurityGroupRuleIngress",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:AuthorizeSecurityGroupIngress",
+        "ec2:RevokeSecurityGroupIngress"
+      ],
+      "Resource": "arn:aws:ec2:us-east-1:810995308548:security-group-rule/*"
     },
     {
       "Sid": "Ec2ProjectKeyPairsOnly",
@@ -184,20 +195,29 @@
     {
       "Sid": "IamReadOnlyVerification",
       "Effect": "Allow",
-      "Action": ["iam:GetAccountSummary", "iam:ListRoles", "iam:ListInstanceProfiles"],
+      "Action": [
+        "iam:GetAccountSummary",
+        "iam:ListRoles",
+        "iam:ListInstanceProfiles",
+        "iam:ListUsers",
+        "iam:GetUser",
+        "iam:ListAttachedUserPolicies",
+        "iam:ListUserPolicies",
+        "iam:ListAccessKeys",
+        "iam:ListMFADevices",
+        "iam:ListVirtualMFADevices"
+      ],
       "Resource": "*"
     },
     {
       "Sid": "BudgetsProjectBudgetsOnly",
       "Effect": "Allow",
-      "Action": ["budgets:ViewBudget", "budgets:ModifyBudget"],
-      "Resource": "arn:aws:budgets::810995308548:budget/VibeGuard-*"
-    },
-    {
-      "Sid": "BudgetsListForVerification",
-      "Effect": "Allow",
-      "Action": "budgets:ViewBudget",
-      "Resource": "arn:aws:budgets::810995308548:budget/*"
+      "Action": ["budgets:ViewBudget", "budgets:ModifyBudget", "budgets:DescribeBudgets"],
+      "Resource": [
+        "arn:aws:budgets::810995308548:budget/VibeGuard-*",
+        "arn:aws:budgets::810995308548:budget/*",
+        "*"
+      ]
     },
     {
       "Sid": "FreeTierAndCostReadOnly",

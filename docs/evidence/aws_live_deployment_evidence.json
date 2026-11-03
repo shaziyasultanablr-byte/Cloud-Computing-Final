@@ -1,0 +1,121 @@
+{
+    "s3_bucket":  {
+                      "bucket_name":  "vibeguard-cloud-2026-810995308548",
+                      "model_artifact_objects_synced":  8,
+                      "object_ownership":  "BucketOwnerEnforced",
+                      "bucket_arn":  "arn:aws:s3:::vibeguard-cloud-2026-810995308548",
+                      "default_encryption":  "AES256",
+                      "public_access_block":  {
+                                                  "IgnorePublicAcls":  true,
+                                                  "BlockPublicAcls":  true,
+                                                  "BlockPublicPolicy":  true,
+                                                  "RestrictPublicBuckets":  true
+                                              },
+                      "total_objects":  24,
+                      "raw_cwru_objects_synced":  16,
+                      "region":  "us-east-1"
+                  },
+    "aws_account_id":  "810995308548",
+    "aws_region":  "us-east-1",
+    "ec2_instance":  {
+                         "security_group_id":  "sg-01fee40d745024ecc",
+                         "ebs_delete_on_termination":  true,
+                         "ebs_volume_type":  "gp3",
+                         "ebs_encrypted":  true,
+                         "public_ip":  "54.162.177.175",
+                         "instance_type":  "t3.small",
+                         "inbound_rules":  "TCP 22 from authorized workstation IP /32 only (port 8501 closed publicly)",
+                         "ebs_volume_id":  "vol-09af634eea204d82d",
+                         "instance_id":  "i-0c8d53060f56c451d",
+                         "private_ip":  "172.31.26.199",
+                         "os":  "Ubuntu 24.04.5 LTS (Noble Numbat) x86_64",
+                         "ami_id":  "ami-0d6dd9e8265d48906",
+                         "availability_zone":  "us-east-1c",
+                         "security_group_name":  "vibeguard-ssh-sg",
+                         "ebs_volume_size_gib":  20
+                     },
+    "budget":  {
+                   "health_status":  "HEALTHY",
+                   "budget_name":  "VibeGuard-Monthly-5USD",
+                   "hard_project_ceiling_usd":  10,
+                   "budget_type":  "COST",
+                   "monthly_limit_usd":  5,
+                   "actual_spend_usd":  0.195
+               },
+    "project":  "VibeGuard Cloud",
+    "security_posture":  {
+                             "deployer_iam_user":  "arn:aws:iam::810995308548:user/vibeguard-deployer",
+                             "deployer_managed_policy":  "arn:aws:iam::810995308548:policy/VibeGuardDeployerManagedPolicy",
+                             "root_mfa_enabled":  true,
+                             "root_access_keys_present":  0,
+                             "deployer_permanent_access_keys":  0,
+                             "root_mfa_device":  "VibeGuard-Root-MFA",
+                             "deployment_sts_session":  "arn:aws:sts::810995308548:assumed-role/VibeGuardDeployerRole/vibeguard-deployer-session",
+                             "deployment_sts_role":  "arn:aws:iam::810995308548:role/VibeGuardDeployerRole"
+                         },
+    "ec2_verification":  {
+                             "held_out_3hp_predictions":  [
+                                                              {
+                                                                  "expected":  "normal",
+                                                                  "windows":  200,
+                                                                  "top_score":  0.986942,
+                                                                  "file":  "data/raw/normal/100.mat",
+                                                                  "channel":  "X100_DE_time",
+                                                                  "margin":  0.982035,
+                                                                  "agreement":  1,
+                                                                  "predicted":  "normal"
+                                                              },
+                                                              {
+                                                                  "expected":  "inner",
+                                                                  "windows":  60,
+                                                                  "top_score":  0.99532,
+                                                                  "file":  "data/raw/inner/108.mat",
+                                                                  "channel":  "X108_DE_time",
+                                                                  "margin":  0.993159,
+                                                                  "agreement":  1,
+                                                                  "predicted":  "inner"
+                                                              },
+                                                              {
+                                                                  "expected":  "ball",
+                                                                  "windows":  59,
+                                                                  "top_score":  0.98904,
+                                                                  "file":  "data/raw/ball/121.mat",
+                                                                  "channel":  "X121_DE_time",
+                                                                  "margin":  0.984025,
+                                                                  "agreement":  1,
+                                                                  "predicted":  "ball"
+                                                              },
+                                                              {
+                                                                  "expected":  "outer",
+                                                                  "windows":  59,
+                                                                  "top_score":  0.985114,
+                                                                  "file":  "data/raw/outer/133.mat",
+                                                                  "channel":  "X133_DE_time",
+                                                                  "margin":  0.97768,
+                                                                  "agreement":  1,
+                                                                  "predicted":  "outer"
+                                                              }
+                                                          ],
+                             "pytest_suite":  "15 passed in 6.10s",
+                             "streamlit_bind_address":  "127.0.0.1:8501",
+                             "ssh_tunnel_health_check":  "HTTP 200 OK (ok)",
+                             "ssh_tunnel_root_page_bytes":  6467,
+                             "s3_iam_role_probe":  "Connected via IAM role to private bucket s3://vibeguard-cloud-2026-810995308548 (24 objects)."
+                         },
+    "ec2_iam_role":  {
+                         "role_id":  "AROA3ZUYWLACNULYAM2DR",
+                         "inline_policy_name":  "VibeGuardS3LeastPrivilege",
+                         "instance_profile_arn":  "arn:aws:iam::810995308548:instance-profile/VibeGuardEC2Role",
+                         "instance_profile_id":  "AIPA3ZUYWLACI3D3Z3CLD",
+                         "role_arn":  "arn:aws:iam::810995308548:role/VibeGuardEC2Role",
+                         "role_name":  "VibeGuardEC2Role",
+                         "instance_profile_name":  "VibeGuardEC2Role"
+                     },
+    "verified_utc":  "2026-11-03T12:17:13Z",
+    "account_plan":  {
+                         "plan_type":  "FREE",
+                         "status":  "ACTIVE",
+                         "expiration_date":  "2027-04-14T05:45:56Z",
+                         "remaining_promotional_credits_usd":  99.69
+                     }
+}

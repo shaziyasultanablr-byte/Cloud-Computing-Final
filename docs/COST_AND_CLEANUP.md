@@ -10,9 +10,9 @@
 
 | Phase / Checkpoint | Account Plan | Promotional Credit Balance | Active EC2 Instance | Active EBS Volume | Active S3 Bucket | Notes |
 |---|---|---|---|---|---|---|
-| **Baseline (Pre-Deployment)** | AWS Free Plan | `USD 100.00` (`$0.00` used) | None | None | None | Verified from owner account status; local training completed at `$0.00` cloud spend |
-| **During Cloud Demo** | AWS Free Plan | Inspect in Billing $\to$ Credits | `1x` Free-Tier eligible `x86_64` Ubuntu 24.04 | `1x 20 GiB gp3` | `vibeguard-cloud-2026-<suffix>` (Private) | Bound to `127.0.0.1:8501` via SSH tunnel |
-| **Post-Viva Cleanup** | AWS Free Plan | Record final balance after billing refresh | Terminated | Deleted with instance | Emptied & deleted (once authorized) | All permanent deliverables preserved in GitHub |
+| **Baseline (Pre-Deployment)** | AWS Free Plan (`ACTIVE`) | `USD 99.69` remaining (`$0.195` spend) | None | None | None | Verified via `aws freetier get-account-plan-state`; monthly budget `VibeGuard-Monthly-5USD` (`$5.00`) active |
+| **Live Cloud Deployment (`us-east-1`)** | AWS Free Plan (`ACTIVE`) | `USD 99.69` (`< $0.25` total credit usage) | `i-0c8d53060f56c451d` (`t3.small`, Ubuntu 24.04.5 LTS) | `vol-09af634eea204d82d` (`20 GiB gp3`, encrypted) | `vibeguard-cloud-2026-810995308548` (Private, `24` objects) | Bound to `127.0.0.1:8501` via `VibeGuardEC2Role` and SSH tunnel (`sg-01fee40d745024ecc`) |
+| **Post-Viva Cleanup** | AWS Free Plan | Record final balance after billing refresh | Terminated (`i-0c8d53060f56c451d`) | Auto-deleted (`DeleteOnTermination=true`) | Emptied & deleted (once authorized) | All permanent deliverables preserved in GitHub |
 
 ## 3. Mandatory Post-Demonstration Teardown Checklist
 

@@ -134,8 +134,28 @@ streamlit run app.py --server.address 127.0.0.1 --server.port 8501 --server.head
 ### 4.4 Open Encrypted SSH Tunnel from Local Windows PC
 In a second PowerShell terminal on the local PC:
 ```powershell
-$IP = "<EC2_PUBLIC_IPV4>"
-$KEY = "$HOME\Downloads\vibeguard-key.pem"
+$IP = "54.162.177.175"
+$KEY = "$HOME\.ssh\vibeguard-ec2-key.pem"
 ssh -i $KEY -L 8501:127.0.0.1:8501 ubuntu@$IP
 ```
 Open **`http://localhost:8501`** in the local browser to interact with the EC2-hosted dashboard securely over SSH.
+
+---
+
+## 5. Verified Live AWS Cloud Deployment Record (`us-east-1`)
+
+The complete cloud architecture was provisioned and verified live in AWS Account `810995308548` (`us-east-1`). Full machine-readable telemetry is preserved in [`docs/evidence/aws_live_deployment_evidence.json`](evidence/aws_live_deployment_evidence.json).
+
+| Component | Provisioned Resource / Identifier | Verified Configuration & Status |
+|---|---|---|
+| **AWS Account & Plan** | Account `810995308548` (`us-east-1`) | **AWS Free Plan (`ACTIVE`)**, `99.69 USD` remaining promotional credits |
+| **Root & IAM Security** | `VibeGuard-Root-MFA` / `vibeguard-deployer` / `VibeGuardDeployerRole` | Root MFA enabled (`1`), Root access keys: `0`, Deployer permanent keys: `0`, deployed via temporary STS session (`assumed-role/VibeGuardDeployerRole/vibeguard-deployer-session`) |
+| **Monthly Cost Budget** | `VibeGuard-Monthly-5USD` | `5.00 USD` monthly COST budget (`HEALTHY`, actual spend `0.195 USD`, hard ceiling `10.00 USD`) |
+| **Private S3 Bucket** | `s3://vibeguard-cloud-2026-810995308548` | `BlockPublicAcls=true`, `IgnorePublicAcls=true`, `BlockPublicPolicy=true`, `RestrictPublicBuckets=true`, `BucketOwnerEnforced`, `SSE-S3 (AES256)` (`16` raw CWRU `.mat` files + `8` model artifacts = `24` objects verified) |
+| **EC2 IAM Role & Profile** | `VibeGuardEC2Role` (`AROA3ZUYWLACNULYAM2DR` / `AIPA3ZUYWLACI3D3Z3CLD`) | Trusts `ec2.amazonaws.com`; inline policy `VibeGuardS3LeastPrivilege` scoped strictly to `arn:aws:s3:::vibeguard-cloud-2026-810995308548` |
+| **EC2 Compute Instance** | `i-0c8d53060f56c451d` (`VibeGuard-Cloud-EC2`) | `t3.small` (Free Tier eligible), Ubuntu 24.04.5 LTS (`ami-0d6dd9e8265d48906`), AZ `us-east-1c`, Public IP `54.162.177.175`, Private IP `172.31.26.199` |
+| **EBS Root Storage** | `vol-09af634eea204d82d` (`VibeGuard-Cloud-EBS`) | `20 GiB gp3`, `Encrypted=true`, `DeleteOnTermination=true` |
+| **Network Security Group** | `sg-01fee40d745024ecc` (`vibeguard-ssh-sg`) | Inbound TCP `22` restricted to authorized workstation IP `/32` (`sgr-05b511659fb56cc37`); port `8501` closed publicly |
+| **EC2 Automated Test Suite** | `python3 -m pytest -v` on `i-0c8d53060f56c451d` | **`15 passed in 6.10s`** (all unit, split, negative-input, S3 offline-safety, and 4-class end-to-end tests passed on EC2) |
+| **EC2 4-Class `3 HP` Inference** | `100.mat`, `108.mat`, `121.mat`, `133.mat` | `4/4` (`100.00%`) exact match with local metrics (`normal=0.986942`, `inner=0.995320`, `ball=0.989040`, `outer=0.985114`) |
+| **SSH Tunnel Health Check** | `http://127.0.0.1:8501/_stcore/health` over `ssh -L 8501:127.0.0.1:8501` | Verified `HTTP 200 OK` (`ok`) and dashboard HTML (`6,467` bytes) over encrypted SSH tunnel |

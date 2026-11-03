@@ -254,11 +254,14 @@ def build_final_report_pdf(
 
     story.append(
         Paragraph(
-            "The AWS architecture enforces strict Free Plan cost guardrails (USD 5.00 monthly budget alert, single region "
-            "<i>us-east-1</i>, zero paid services) and least-privilege security. The EC2 instance accesses private S3 "
-            "prefixes (<i>raw/</i> and <i>artifacts/</i>) exclusively via the attached <i>VibeGuardEC2Role</i> instance "
-            "profile without static access keys. The Streamlit application binds to <i>127.0.0.1:8501</i> and is "
-            "demonstrated over an encrypted SSH tunnel (<i>ssh -L 8501:127.0.0.1:8501</i>).",
+            "The AWS architecture enforces strict Free Plan cost guardrails (USD 5.00 monthly budget "
+            "<i>VibeGuard-Monthly-5USD</i>, single region <i>us-east-1</i>, 99.69 USD remaining Free Plan credits) "
+            "and least-privilege security. The Ubuntu 24.04.5 LTS <i>t3.small</i> EC2 instance (<i>i-0c8d53060f56c451d</i>, "
+            "20 GiB <i>gp3</i> volume <i>vol-09af634eea204d82d</i>, security group <i>sg-01fee40d745024ecc</i>) accesses "
+            "the private S3 bucket (<i>s3://vibeguard-cloud-2026-810995308548</i>, 24 objects) exclusively via the attached "
+            "<i>VibeGuardEC2Role</i> instance profile without static access keys. All 15/15 <i>pytest</i> tests and all "
+            "4/4 held-out 3 HP conditions were verified directly on EC2, and the Streamlit dashboard (<i>127.0.0.1:8501</i>) "
+            "was verified over an encrypted SSH tunnel (<i>ssh -L 8501:127.0.0.1:8501</i>).",
             body_style,
         )
     )
@@ -630,15 +633,14 @@ def build_final_presentation_pptx(
 
     # Slide 10: Streamlit Web Application & AWS Security Controls
     s10 = prs.slides.add_slide(blank_layout)
-    add_header(s10, "9. Streamlit Cloud Dashboard & Security Architecture", "Interactive Upload, Validation Guards, Manual-Review Flag & SSH Tunnel")
+    add_header(s10, "9. Live AWS Cloud Deployment & Streamlit Dashboard (us-east-1)", "Provisioned on EC2 (i-0c8d53060f56c451d) + Private S3 + VibeGuardEC2Role + SSH Tunnel")
     add_bullets(
         s10,
         [
-            "Strict Upload Validation: Accepts CWRU .mat (*_DE_time) or 1-column numeric .csv (<= 25 MiB, >= 2,048 samples); rejects HTML error files, NaN/Inf, constant signals, and wrong channels with friendly UI banners.",
-            "Diagnostic Display: Shows predicted bearing condition, 4-class uncalibrated softmax scores, window-level segment agreement (%), raw/normalized waveforms, and FFT spectrum.",
-            "Manual-Review Warning Banner: Automatically flags recordings when top score < 0.70 or window agreement < 80%.",
-            "Credential-Free AWS S3 Integration: Uses IAM Instance Profile (VibeGuardEC2Role) with s3:ListBucket, s3:GetObject, and s3:PutObject on private bucket (Block Public Access ON, SSE-S3).",
-            "Encrypted Demo Access: Streamlit runs on 127.0.0.1:8501 inside tmux on EC2 and is accessed via ssh -i key.pem -L 8501:127.0.0.1:8501.",
+            "Live EC2 Compute & Storage: Ubuntu 24.04.5 LTS x86_64 on Free Tier t3.small (i-0c8d53060f56c451d, us-east-1c, 54.162.177.175) with 20 GiB gp3 encrypted EBS volume (vol-09af634eea204d82d) and SSH-only security group (sg-01fee40d745024ecc).",
+            "Private S3 & IAM Role: Bucket s3://vibeguard-cloud-2026-810995308548 (BlockPublicAccess=ON, AES256, 16 raw CWRU .mat + 8 model artifacts = 24 objects) accessed via IAM Instance Profile VibeGuardEC2Role with zero static keys.",
+            "Strict Upload & Diagnostic UI: Validates .mat (*_DE_time) and .csv uploads; displays 4-class uncalibrated softmax scores, segment agreement (%), raw/normalized waveforms, FFT spectrum, and manual-review warning (<0.70 score or <80% agreement).",
+            "Verified on EC2 & Over SSH Tunnel: 15/15 pytest tests and all 4 held-out 3 HP conditions (100.mat, 108.mat, 121.mat, 133.mat) passed on EC2; Streamlit (127.0.0.1:8501) verified over encrypted SSH tunnel (HTTP 200 ok).",
         ],
     )
 
@@ -651,8 +653,8 @@ def build_final_presentation_pptx(
             "Limitation 1 (Sample Size per Load): 2 HP validation and 3 HP test splits each contain 1 recording per class (4 files/split). High accuracy reflects within-rig consistency across a ~3.7% RPM shift.",
             "Limitation 2 (Single Rig & Seeded EDM Faults): Trained on 0.007-in EDM faults on one CWRU test stand; does not prove generalization to unseen motor frames or natural progressive spalling.",
             "Limitation 3 (Uncalibrated Scores): Softmax outputs are uncalibrated confidence scores, not posterior probabilities.",
-            "AWS Cost & Teardown Discipline: Executed strictly within AWS Free Plan ($0.00 cash spend, USD 5 budget alert); EC2/EBS/S3 teardown checklist documented in docs/COST_AND_CLEANUP.md.",
-            "Conclusion: VibeGuard Cloud delivers a fully tested (15/15 pytest passing), reproducible, load-shift-aware bearing fault classification system and cloud deployment package.",
+            "AWS Cost & Teardown Discipline: Executed strictly within AWS Free Plan (99.69 USD credits remaining, $0.195 actual spend, USD 5.00 monthly budget VibeGuard-Monthly-5USD HEALTHY); teardown runbook in docs/COST_AND_CLEANUP.md.",
+            "Conclusion: VibeGuard Cloud delivers a fully tested (15/15 pytest passing locally, on GitHub Actions CI, and on AWS EC2), reproducible bearing fault classification system.",
         ],
     )
 

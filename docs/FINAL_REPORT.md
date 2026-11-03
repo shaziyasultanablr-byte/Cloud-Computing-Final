@@ -96,12 +96,12 @@ For each normalized `2,048`-sample window, `extract_handcrafted_features()` comp
 
 ---
 
-## 6. AWS Cloud Implementation
+## 6. AWS Cloud Implementation (`us-east-1`, Account `810995308548`)
 
-1. **Account & Budget Protection:** Deployed within an AWS Free Plan account (`USD 100.00` initial promotional credit balance, `AED 0.00` cash spend) guarded by a `USD 5.00` monthly AWS Cost Budget alert.
-2. **Private Amazon S3 Bucket:** Configured in `us-east-1` with **Block All Public Access = ON**, ACLs disabled, and default `AES256` server-side encryption (`SSE-S3`). Holds `raw/` (16 `.mat` files) and `artifacts/` (`model.pt`, `metrics.json`, `file_level_metrics.json`, `run_manifest.json`, `test_predictions.csv`, figures).
-3. **Least-Privilege IAM Role (`VibeGuardEC2Role`):** Attached as an EC2 Instance Profile permitting only `s3:ListBucket` on the bucket ARN and `s3:GetObject`/`s3:PutObject` on `arn:aws:s3:::<bucket>/*`. No `.env` credentials or `aws configure` access keys are stored on EC2.
-4. **EC2 & Encrypted SSH Tunnel:** Ubuntu Server 24.04 LTS (`x86_64`) with `20 GiB gp3` EBS storage and security group `vibeguard-ssh-only` (TCP 22 from authorized IP only). Streamlit runs inside `tmux` bound to `127.0.0.1:8501` and is accessed locally via `ssh -i key.pem -L 8501:127.0.0.1:8501 ubuntu@<EC2_IP>`.
+1. **Account & Budget Protection:** Deployed within an AWS Free Plan account (`USD 99.69` remaining promotional credit balance, `AED 0.00` cash spend) guarded by the `VibeGuard-Monthly-5USD` (`USD 5.00` monthly COST budget, status `HEALTHY`, actual spend `USD 0.195`). Provisioned under a non-root temporary STS session (`assumed-role/VibeGuardDeployerRole/vibeguard-deployer-session`, `0` permanent access keys).
+2. **Private Amazon S3 Bucket (`s3://vibeguard-cloud-2026-810995308548`):** Provisioned in `us-east-1` with **Block All Public Access = ON** (`BlockPublicAcls=true, IgnorePublicAcls=true, BlockPublicPolicy=true, RestrictPublicBuckets=true`), `BucketOwnerEnforced`, and default `AES256` server-side encryption (`SSE-S3`). Holds `raw/` (`16` official CWRU `.mat` files) and `artifacts/` (`8` verified model/evaluation artifacts = `24` total objects).
+3. **Least-Privilege IAM Role (`VibeGuardEC2Role`):** Role `AROA3ZUYWLACNULYAM2DR` and Instance Profile `AIPA3ZUYWLACI3D3Z3CLD` attached to EC2, permitting only `s3:ListBucket` on `arn:aws:s3:::vibeguard-cloud-2026-810995308548` and `s3:GetObject`/`s3:PutObject` on `arn:aws:s3:::vibeguard-cloud-2026-810995308548/*`. Zero static AWS keys exist on the EC2 instance.
+4. **EC2 Compute, EBS Storage & Encrypted SSH Tunnel:** Ubuntu Server 24.04.5 LTS (`x86_64`, AMI `ami-0d6dd9e8265d48906`) running on Free Tier eligible `t3.small` instance **`i-0c8d53060f56c451d`** (`54.162.177.175`, AZ `us-east-1c`) with a `20 GiB gp3` encrypted EBS root volume (`vol-09af634eea204d82d`) and security group `sg-01fee40d745024ecc` (`vibeguard-ssh-sg`, inbound TCP 22 from authorized IP `/32` only; port `8501` closed publicly). All `15/15` automated `pytest` tests and all `4/4` held-out `3 HP` recordings (`100.mat`, `108.mat`, `121.mat`, `133.mat`) were executed and verified directly on EC2, and the Streamlit dashboard (`127.0.0.1:8501`) was verified over an encrypted SSH tunnel (`HTTP 200 ok`).
 
 ---
 
