@@ -44,6 +44,8 @@ Cloud-Computing-Final/
 ├── train.py                         # Reproducible training & locked 3 HP cross-load evaluation pipeline
 ├── cloud_sync.py                    # Credential-free boto3 S3 sync & verification utility (IAM Role)
 ├── app.py                           # Streamlit web application (upload, inference, plots, S3 status)
+├── ui_design.py                     # Midnight/Cobalt/Lime presentation layer, CSS theme, and dark charts
+├── apply_redesign.py                # Reproducible UI redesign integration script
 ├── scripts/
 │   ├── validate_dataset.py          # Generates SHA-256 provenance manifest (docs/dataset_checksums.csv)
 │   ├── generate_architecture_diagram.py
@@ -131,7 +133,7 @@ Then open **`http://localhost:8501`** in your browser. See [`docs/AWS_DEPLOYMENT
 - **Public URL:** [`https://vibeguard-cloud.streamlit.app`](https://vibeguard-cloud.streamlit.app)
 - **One-Click Deployment Link:** [`https://share.streamlit.io/deploy?repository=shaziyasultanablr-byte/Cloud-Computing-Final&branch=main&mainModule=app.py`](https://share.streamlit.io/deploy?repository=shaziyasultanablr-byte/Cloud-Computing-Final&branch=main&mainModule=app.py)
 - **How It Works Without AWS Keys or Git-Committed Raw Data:**
-  1. Uses `.python-version` (`3.11`) and `requirements.txt` (`--extra-index-url https://download.pytorch.org/whl/cpu`, `torch>=2.2.0`, `numpy==1.26.4`, `pyarrow==18.1.0`) to install lightweight CPU-only wheels within Streamlit Community Cloud's resource limits.
+  1. Uses `.python-version` (`3.11`) and `requirements.txt` (direct PEP 508 CPU wheel URLs for `torch-2.5.1+cpu`, `numpy==1.26.4`, `pyarrow==18.1.0`) to install lightweight CPU-only wheels within Streamlit Community Cloud's resource limits without index resolution conflicts.
   2. Loads the verified `outputs/model.pt` checkpoint (`SHA-256: 3cd1ac3b823ea903...`) once into memory via `@st.cache_resource`.
   3. Automatically fetches and caches the 4 official `3 HP` demonstration recordings (`100.mat`, `108.mat`, `121.mat`, `133.mat`) on demand from the official CWRU Bearing Data Center (`https://engineering.case.edu/sites/default/files/{file_id}.mat`) and verifies their SHA-256 checksums before running inference.
 
@@ -139,6 +141,16 @@ Then open **`http://localhost:8501`** in your browser. See [`docs/AWS_DEPLOYMENT
 ```powershell
 .\.venv\Scripts\python.exe -m streamlit run app.py --server.address 127.0.0.1 --server.port 8501 --server.headless true
 ```
+
+### 3.4 Visual Design System (Midnight / Cobalt / Lime UI)
+The dashboard presentation layer ([`ui_design.py`](ui_design.py) and [`.streamlit/config.toml`](.streamlit/config.toml)) implements an industrial AI signal-intelligence visual hierarchy while keeping all model checkpoints, preprocessing, and evaluation artifacts strictly unchanged:
+- **Color Palette:** Midnight Black (`#030407`) primary canvas and chart backdrop, Electric Cobalt Blue (`#1558C9`) signal traces and featured metric cards, and Acid Lime (`#D4FF24`) active tab navigation, primary status chips, and winning-class highlights.
+- **Typography & Layout:** `Space Grotesk` display headings/numeric metrics paired with `DM Sans` body typography, responsive CSS grid cards (`4 → 2 → 1` columns across desktop `1440px`, tablet `900px`, and mobile `390px`), and full-width untruncated fault-prediction banners (`vg-result`).
+- **Verified Browser Screenshots:**
+  - [`docs/evidence/redesign_desktop_tab1.png`](docs/evidence/redesign_desktop_tab1.png) — Tab `01 / Diagnose` (Desktop `1440px`, `108.mat` Inner Race Fault `0.9953` inference, 4-class score bar chart, provenance card, and 3-panel signal forensics)
+  - [`docs/evidence/redesign_desktop_tab2.png`](docs/evidence/redesign_desktop_tab2.png) — Tab `02 / Evaluate` (Desktop `1440px`, cross-load macro-F1 cards, benchmark limitation banner, 4-recording audit table, dark integer confusion matrices, and training curves)
+  - [`docs/evidence/redesign_desktop_tab3.png`](docs/evidence/redesign_desktop_tab3.png) — Tab `03 / Architecture` (Desktop `1440px`, 4-step pipeline cards, AWS vs. Public Streamlit Cloud environment comparison, and methodological boundaries)
+  - [`docs/evidence/redesign_mobile_390px.png`](docs/evidence/redesign_mobile_390px.png) — Responsive Mobile (`390px`) layout verification
 
 ---
 

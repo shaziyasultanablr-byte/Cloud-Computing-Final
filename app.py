@@ -11,6 +11,12 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+from ui_design import (
+    mount_theme, hero, scope_note, section, sidebar_status,
+    metrics_row, result_hero, provenance_card, eval_limitation_note,
+    score_plot, signal_plot, confusion_plot, training_plot, architecture,
+)
+
 from cloud_sync import probe_s3_status
 from data_utils import (
     CLASS_DISPLAY_NAMES,
@@ -139,36 +145,8 @@ def render_waveform_and_spectrum(
     first_window_norm: np.ndarray,
     sampling_hz: int = NOMINAL_SAMPLING_HZ,
 ) -> plt.Figure:
-    """Plot raw drive-end waveform, first normalized 2,048-sample window, and FFT amplitude spectrum."""
-    fig, axes = plt.subplots(1, 3, figsize=(13.5, 3.6), dpi=140)
-
-    # Panel 1: Raw signal preview (first 4,096 samples)
-    preview_len = min(len(raw_signal), 4096)
-    t_axis = np.arange(preview_len) / float(sampling_hz)
-    axes[0].plot(t_axis, raw_signal[:preview_len], color="#1d4ed8", linewidth=0.8)
-    axes[0].set_title(f"Raw Signal Preview (First {preview_len} Samples)", fontsize=10, fontweight="bold")
-    axes[0].set_xlabel("Time (s) @ 12 kHz Nominal")
-    axes[0].set_ylabel("Acceleration (g)")
-    axes[0].grid(True, linestyle=":", alpha=0.6)
-
-    # Panel 2: First normalized 2,048-sample window
-    axes[1].plot(first_window_norm, color="#059669", linewidth=0.8)
-    axes[1].set_title("Window #1 Normalized (Z-Score, Clamped [-10, 10])", fontsize=10, fontweight="bold")
-    axes[1].set_xlabel("Window Sample Index (0..2047)")
-    axes[1].set_ylabel("Normalized Amplitude")
-    axes[1].grid(True, linestyle=":", alpha=0.6)
-
-    # Panel 3: Single-sided FFT magnitude spectrum of Window #1
-    freqs = np.fft.rfftfreq(len(first_window_norm), d=1.0 / sampling_hz)
-    mag = np.abs(np.fft.rfft(first_window_norm)) / len(first_window_norm)
-    axes[2].plot(freqs / 1000.0, mag, color="#dc2626", linewidth=0.9)
-    axes[2].set_title("Window #1 FFT Magnitude Spectrum", fontsize=10, fontweight="bold")
-    axes[2].set_xlabel("Frequency (kHz) @ 12 kHz Nominal")
-    axes[2].set_ylabel("Spectral Magnitude")
-    axes[2].grid(True, linestyle=":", alpha=0.6)
-
-    fig.tight_layout()
-    return fig
+    """Dark-themed three-panel vibration analysis; data are unchanged."""
+    return signal_plot(raw_signal, first_window_norm, sampling_hz)
 
 
 def main() -> None:
@@ -178,21 +156,9 @@ def main() -> None:
         layout="wide",
     )
 
-    st.title("⚙️ VibeGuard Cloud: Load-Shift-Aware Bearing Fault Classification")
-    st.markdown(
-        "**Cloud-Hosted Research Prototype (`1D TinyFaultCNN` + AWS EC2 & Private S3)**  \n"
-        "Evaluates whether a 1D Convolutional Neural Network trained on **0 HP & 1 HP** drive-end vibration "
-        "recordings generalizes to previously unseen **3 HP** operating loads across four bearing conditions: "
-        "**Normal**, **Inner Race Fault**, **Ball Fault**, and **Outer Race Fault**."
-    )
-
-    st.info(
-        "**Research Scope & Calibration Disclaimer:** This application is a university research prototype built on "
-        "recorded laboratory accelerometer data from the **Case Western Reserve University (CWRU) Bearing Data Center** "
-        "(nominal 12 kHz drive-end channel `*_DE_time`). Reported class scores are **uncalibrated softmax outputs**, "
-        "not calibrated posterior probabilities. The system diagnoses predefined seeded faults and **does not** "
-        "estimate Remaining Useful Life (RUL) or replace certified industrial maintenance inspection."
-    )
+    mount_theme()
+    hero()
+    scope_note()
 
     metrics_data = load_json_if_exists(METRICS_PATH)
     file_metrics_data = load_json_if_exists(FILE_METRICS_PATH)
@@ -200,70 +166,44 @@ def main() -> None:
     s3_status = probe_s3_status()
 
     with st.sidebar:
-        st.header("🔍 Model & Cloud Status")
-        if MODEL_PATH.exists():
-            model_sha = compute_sha256(MODEL_PATH)[:16]
-            st.success(f"Checkpoint Loaded (`outputs/model.pt`)\nSHA-256: `{model_sha}...`")
-        else:
-            st.error("Model checkpoint `outputs/model.pt` not found. Run `python train.py` first.")
-
-        if metrics_data:
-            st.markdown(f"- **Run ID:** `{metrics_data.get('run_id', 'N/A')}`")
-            st.markdown(f"- **Selected Epoch (2 HP Val):** `{metrics_data.get('selected_epoch', 'N/A')}`")
-            cnn_test = metrics_data.get("cnn_1d", {}).get("test_3hp", {})
-            rf_test = metrics_data.get("random_forest_baseline", {}).get("test_3hp", {})
-            if cnn_test:
-                st.markdown(
-                    f"- **3 HP Held-Out Window Acc (CNN):** `{cnn_test.get('accuracy', 0.0):.2%}` "
-                    f"(Macro-F1: `{cnn_test.get('macro_f1', 0.0):.3f}`)"
-                )
-            if rf_test:
-                st.markdown(
-                    f"- **3 HP Held-Out Window Acc (RF):** `{rf_test.get('accuracy', 0.0):.2%}` "
-                    f"(Macro-F1: `{rf_test.get('macro_f1', 0.0):.3f}`)"
-                )
-
-        st.divider()
-        st.subheader("☁️ AWS S3 Integration")
-        if s3_status["connected"]:
-            st.success(s3_status["message"])
-        else:
-            st.info(
-                "🌐 **Public Web Demo Mode (Credential-Free)**  \n"
-                "Running without AWS credentials. Official 3 HP CWRU test recordings are retrieved "
-                "automatically on demand from the CWRU Bearing Data Center and verified by SHA-256."
-            )
-            st.caption(s3_status["message"])
-
-        st.divider()
-        st.subheader("🛡️ Manual-Review Thresholds")
-        st.caption(
-            f"- Minimum Top Uncalibrated Score: `{DEFAULT_CONFIDENCE_THRESHOLD:.2f}`\n"
-            f"- Minimum Segment Agreement: `{DEFAULT_AGREEMENT_THRESHOLD:.0%}`\n"
-            "- Pre-specified heuristic (never tuned on 3 HP test set)."
+        checkpoint_sha = compute_sha256(MODEL_PATH)[:16] if MODEL_PATH.exists() else None
+        sidebar_cnn = metrics_data.get("cnn_1d", {}).get("test_3hp", {}) if metrics_data else {}
+        sidebar_rf = metrics_data.get("random_forest_baseline", {}).get("test_3hp", {}) if metrics_data else {}
+        sidebar_status(
+            model_sha=checkpoint_sha,
+            run_id=metrics_data.get("run_id", "N/A") if metrics_data else "N/A",
+            epoch=metrics_data.get("selected_epoch", "N/A") if metrics_data else "N/A",
+            cnn_f1=float(sidebar_cnn["macro_f1"]) if "macro_f1" in sidebar_cnn else None,
+            rf_f1=float(sidebar_rf["macro_f1"]) if "macro_f1" in sidebar_rf else None,
+            s3_connected=bool(s3_status["connected"]),
+            s3_message=str(s3_status["message"]),
+            confidence_threshold=DEFAULT_CONFIDENCE_THRESHOLD,
+            agreement_threshold=DEFAULT_AGREEMENT_THRESHOLD,
         )
 
     tab_infer, tab_eval, tab_arch = st.tabs(
         [
-            "1. Signal Upload & Fault Inference",
-            "2. Held-Out 3 HP Evaluation & Baseline Comparison",
-            "3. Architecture, Provenance & Limitations",
+            "01  /  Diagnose",
+            "02  /  Evaluate",
+            "03  /  Architecture",
         ]
     )
 
     with tab_infer:
+        section("01 / LIVE INFERENCE", "What is your motor telling you?", "Choose a verified CWRU recording or upload a compatible single-channel vibration signal.")
         col_in1, col_in2 = st.columns([1.2, 1.0])
         with col_in1:
-            st.subheader("Upload Vibration Recording")
+            st.markdown("##### Upload a vibration recording")
             uploaded_file = st.file_uploader(
                 "Upload a CWRU MATLAB (.mat with `*_DE_time`) or single-column numeric CSV (>= 2,048 samples, max 25 MiB):",
                 type=["mat", "csv"],
             )
         with col_in2:
-            st.subheader("Or Select a Held-Out 3 HP Sample")
+            st.markdown("##### Select a verified 3 HP sample")
             demo_choice = st.selectbox(
                 "Inspect a locked 3 HP test recording (never used in training or model selection):",
                 options=list(HELD_OUT_DEMO_FILES.keys()),
+                index=2,
             )
 
         if not MODEL_PATH.exists():
@@ -311,8 +251,7 @@ def main() -> None:
                     model, ckpt_meta = get_cached_model(str(MODEL_PATH))
                     pred_result = predict_windows(model, windows, device="cpu")
 
-                    st.divider()
-                    st.subheader(f"Diagnostic Result for `{source_name}`")
+                    section("DIAGNOSTIC OUTPUT", "Signal analysis complete", "Predictions shown below were computed from the loaded, unchanged TinyFaultCNN checkpoint.")
                     if demo_meta is not None:
                         st.caption(
                             f"Held-Out Test Recording ID: **{demo_meta['file_id']}** | "
@@ -332,24 +271,25 @@ def main() -> None:
                             "agreement exceed pre-specified heuristic thresholds."
                         )
 
-                    m1, m2, m3, m4 = st.columns(4)
-                    m1.metric("Predicted Bearing Condition", pred_result["predicted_display"])
-                    m2.metric(
-                        "Top Uncalibrated Score",
-                        f"{pred_result['top_uncalibrated_score']:.4f}",
+                    result_hero(
+                        predicted_display=pred_result["predicted_display"],
+                        source_file=source_name,
+                        manual_review=bool(pred_result["manual_review_required"]),
+                        note="3 HP held-out CWRU recording" if demo_meta is not None else "User-supplied recording",
                     )
-                    m3.metric(
-                        "Segment Agreement",
-                        f"{pred_result['segment_agreement']:.1%}",
-                    )
-                    m4.metric(
-                        "Analyzed Windows",
-                        f"{pred_result['num_windows']} × {WINDOW_SIZE}",
-                    )
+                    metrics_row([
+                        ("Top model score", f"{pred_result['top_uncalibrated_score']:.4f}", "Uncalibrated softmax"),
+                        ("Segment agreement", f"{pred_result['segment_agreement']:.1%}", "Window-level consistency"),
+                        ("Analyzed windows", str(pred_result["num_windows"]), f"{WINDOW_SIZE:,} samples per window"),
+                        ("Operating load", f"{demo_meta['load_hp']} HP" if demo_meta else "Not specified", "Held-out test" if demo_meta else "Uploaded recording"),
+                    ], featured=0)
 
                     score_col, meta_col = st.columns([1.2, 1.0])
                     with score_col:
-                        st.markdown("#### Four-Class Uncalibrated Model Scores")
+                        section("MODEL OUTPUT", "Four-class score comparison", "Scores are not calibrated probabilities.")
+                        score_fig = score_plot(pred_result["mean_scores"], CLASS_DISPLAY_NAMES, CLASS_NAMES)
+                        st.pyplot(score_fig, clear_figure=True)
+                        plt.close(score_fig)
                         scores_df = pd.DataFrame(
                             [
                                 {
@@ -362,27 +302,33 @@ def main() -> None:
                             ]
                         )
                         st.dataframe(scores_df, width="stretch", hide_index=True)
-                        st.bar_chart(
-                            scores_df.set_index("Bearing Condition")["Mean Uncalibrated Softmax Score"]
-                        )
 
                     with meta_col:
-                        st.markdown("#### Signal & Preprocessing Metadata")
-                        st.json(
-                            {
-                                "source_file": source_name,
-                                "channel_key": sig_meta["channel_key"],
-                                "raw_samples": sig_meta["num_samples"],
-                                "recorded_rpm": sig_meta["recorded_rpm"],
-                                "nominal_sampling_hz": sig_meta["sampling_hz_nominal"],
-                                "windows_extracted": seg_meta["num_windows"],
-                                "sample_index_span": f"[0, {seg_meta['end_sample']})",
-                                "normalization": "Per-window z-score, clamped [-10, 10]",
-                                "calibration_notice": pred_result["calibration_note"],
-                            }
+                        section("SIGNAL PROVENANCE", "Recording & preprocessing metadata", "Verified raw data, channel and window parameters.")
+                        provenance_card(
+                            source_file=source_name,
+                            channel_key=str(sig_meta["channel_key"]),
+                            sampling_hz=int(sig_meta["sampling_hz_nominal"]),
+                            window_size=WINDOW_SIZE,
+                            num_windows=int(seg_meta["num_windows"]),
+                            manual_review=bool(pred_result["manual_review_required"]),
                         )
+                        with st.expander("Inspect full provenance & preprocessing JSON"):
+                            st.json(
+                                {
+                                    "source_file": source_name,
+                                    "channel_key": sig_meta["channel_key"],
+                                    "raw_samples": sig_meta["num_samples"],
+                                    "recorded_rpm": sig_meta["recorded_rpm"],
+                                    "nominal_sampling_hz": sig_meta["sampling_hz_nominal"],
+                                    "windows_extracted": seg_meta["num_windows"],
+                                    "sample_index_span": f"[0, {seg_meta['end_sample']})",
+                                    "normalization": "Per-window z-score, clamped [-10, 10]",
+                                    "calibration_notice": pred_result["calibration_note"],
+                                }
+                            )
 
-                    st.markdown("#### Vibration Waveform & Spectral Inspection (12 kHz Nominal)")
+                    section("SIGNAL FORENSICS", "Vibration & frequency analysis", "Three complementary views of the same recording. Nominal sample rate: 12 kHz.")
                     fig = render_waveform_and_spectrum(signal, windows[0], sampling_hz=NOMINAL_SAMPLING_HZ)
                     st.pyplot(fig)
                     plt.close(fig)
@@ -396,7 +342,7 @@ def main() -> None:
                     )
 
     with tab_eval:
-        st.subheader("Locked Cross-Load Evaluation (Trained on 0 & 1 HP → Validated on 2 HP → Tested on 3 HP)")
+        section("02 / MODEL EVALUATION", "Performance under load shift", "Training: 0 & 1 HP · Validation: 2 HP · Final held-out test: 3 HP. Scores come from frozen evaluation artifacts.")
         if metrics_data is None or file_metrics_data is None:
             st.info("No evaluation artifacts found yet. Run `python train.py` to generate `outputs/metrics.json`.")
         else:
@@ -405,13 +351,15 @@ def main() -> None:
             cnn_val = metrics_data["cnn_1d"]["val_2hp"]
             rf_val = metrics_data["random_forest_baseline"]["val_2hp"]
 
-            c1, c2, c3, c4 = st.columns(4)
-            c1.metric("1D CNN — 2 HP Val Macro-F1", f"{cnn_val['macro_f1']:.4f}")
-            c2.metric("1D CNN — 3 HP Test Macro-F1", f"{cnn_test['macro_f1']:.4f}")
-            c3.metric("Random Forest — 2 HP Val Macro-F1", f"{rf_val['macro_f1']:.4f}")
-            c4.metric("Random Forest — 3 HP Test Macro-F1", f"{rf_test['macro_f1']:.4f}")
+            metrics_row([
+                ("CNN · Validation macro-F1", f"{cnn_val['macro_f1']:.4f}", "2 HP unseen validation"),
+                ("CNN · Test macro-F1", f"{cnn_test['macro_f1']:.4f}", "3 HP locked test"),
+                ("RF · Validation macro-F1", f"{rf_val['macro_f1']:.4f}", "2 HP unseen validation"),
+                ("RF · Test macro-F1", f"{rf_test['macro_f1']:.4f}", "3 HP locked test"),
+            ], featured=1)
+            eval_limitation_note()
 
-            st.markdown("#### Recording-Level Predictions on Held-Out 3 HP Test Split (4 Recordings)")
+            section("RECORDING AUDIT", "Four held-out test recordings", "The same four recordings were never included in training or validation selection.")
             rec_rows = file_metrics_data.get("cnn_1d", {}).get("test_3hp", {}).get("recordings", [])
             rf_rows = file_metrics_data.get("random_forest_baseline", {}).get("test_3hp", {}).get("recordings", [])
             rf_by_id = {r["file_id"]: r for r in rf_rows}
@@ -438,21 +386,28 @@ def main() -> None:
                     )
                 st.dataframe(pd.DataFrame(clean_rec_rows), width="stretch", hide_index=True)
 
-            fig_col1, fig_col2 = st.columns(2)
-            cm_img = Path("outputs/confusion_matrix.png")
-            loss_img = Path("outputs/training_loss.png")
-            if cm_img.exists():
-                with fig_col1:
-                    st.image(str(cm_img), caption="3 HP Test Confusion Matrices & CNN vs. RF F1 Comparison")
-            if loss_img.exists():
-                with fig_col2:
-                    st.image(str(loss_img), caption="1D TinyFaultCNN Training & Validation Curves")
+            section("DIAGNOSTIC EVIDENCE", "Confusion matrices", "Actual versus predicted windows, on the locked 3 HP test set.")
+            confusion_fig = confusion_plot(
+                cnn_test["confusion_matrix"], rf_test["confusion_matrix"], cnn_test["labels"]
+            )
+            st.pyplot(confusion_fig, clear_figure=True)
+            plt.close(confusion_fig)
+
+            history_data = load_json_if_exists(Path("outputs/training_history.json"))
+            if history_data:
+                section("TRAINING HISTORY", "Learning dynamics", "Validation data were used for model selection; final test data were held out.")
+                history_fig = training_plot(history_data)
+                st.pyplot(history_fig, clear_figure=True)
+                plt.close(history_fig)
+
 
     with tab_arch:
-        st.subheader("System Architecture, Dataset Provenance & Methodological Limitations")
+        section("03 / SYSTEM ARCHITECTURE", "From raw signal to diagnosis", "One reproducible pipeline, two purpose-built deployment environments.")
+        architecture()
         arch_img = Path("docs/architecture.png")
         if arch_img.exists():
-            st.image(str(arch_img), caption="VibeGuard Cloud End-to-End Architecture")
+            with st.expander("View original technical architecture figure"):
+                st.image(str(arch_img), caption="Original AWS end-to-end architecture")
 
         st.markdown(
             """

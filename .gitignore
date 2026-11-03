@@ -30,3 +30,4 @@ data/raw/*.mat
 Thumbs.db
 .vscode/
 .idea/
+app.py.before-ui-redesign.bak
