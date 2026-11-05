@@ -3,6 +3,7 @@
 **Final-Year Cloud Computing & Deep Learning Project**  
 **Repository:** `https://github.com/shaziyasultanablr-byte/Cloud-Computing-Final`  
 **Public Web App (Streamlit Community Cloud):** [`https://vibeguard-cloud.streamlit.app`](https://vibeguard-cloud.streamlit.app)
+
 **AWS Cloud Infrastructure (`us-east-1`):** EC2 `i-0c8d53060f56c451d` (`t3.small`, Ubuntu 24.04.5 LTS) + `20 GiB gp3` EBS (`vol-09af634eea204d82d`) + Private S3 (`s3://vibeguard-cloud-2026-810995308548`) + IAM Role (`VibeGuardEC2Role`)
 
 ---
