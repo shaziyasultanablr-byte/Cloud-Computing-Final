@@ -44,7 +44,8 @@ Cloud-Computing-Final/
 ├── train.py                         # Reproducible training & locked 3 HP cross-load evaluation pipeline
 ├── cloud_sync.py                    # Credential-free boto3 S3 sync & verification utility (IAM Role)
 ├── app.py                           # Streamlit web application (upload, inference, plots, S3 status)
-├── ui_design.py                     # Midnight/Cobalt/Lime presentation layer, CSS theme, and dark charts
+├── ui_design.py                     # Midnight/Cobalt/Lime presentation layer, CSS theme, and interactive Plotly charts
+├── report_utils.py                  # Downloadable PDF and CSV diagnostic report generator (ReportLab)
 ├── apply_redesign.py                # Reproducible UI redesign integration script
 ├── scripts/
 │   ├── validate_dataset.py          # Generates SHA-256 provenance manifest (docs/dataset_checksums.csv)
@@ -52,7 +53,8 @@ Cloud-Computing-Final/
 │   └── generate_docs.py             # Generates FINAL_REPORT.pdf and FINAL_PRESENTATION.pptx from metrics
 ├── tests/
 │   ├── test_core.py                 # Unit & integration tests (shapes, NaN/Inf, CSV/MAT guards, checkpoint)
-│   └── test_splits.py               # Programmatic verification of recording- and load-disjoint splits
+│   ├── test_splits.py               # Programmatic verification of recording- and load-disjoint splits
+│   └── test_ui_upgrade.py           # Automated UI workflow, interactive Plotly, and PDF/CSV report export tests
 ├── docs/
 │   ├── DATASET_MANIFEST.csv         # Immutable 16-file CWRU split and metadata specification
 │   ├── dataset_checksums.csv        # Verified SHA-256 checksums, channel keys, and window counts
